@@ -1,12 +1,16 @@
 package com.udacity.webcrawler.json;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.io.Reader;
 import java.nio.file.Path;
 import java.util.Objects;
 
+
 /**
  * A static utility class that loads a JSON configuration file.
  */
+@JsonDeserialize(builder = CrawlerConfiguration.Builder.class)
 public final class ConfigurationLoader {
 
   private final Path path;
