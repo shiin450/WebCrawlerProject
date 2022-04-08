@@ -2,13 +2,13 @@ package com.udacity.webcrawler;
 
 import com.udacity.webcrawler.json.CrawlResult;
 import com.udacity.webcrawler.parser.PageParserFactory;
+import com.udacity.webcrawler.profiler.Profiled;
 
 import javax.inject.Inject;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ForkJoinPool;
@@ -45,12 +45,12 @@ final class ParallelWebCrawler implements WebCrawler {
     this.parserFactory = parserFactory;
   }
 
+  @Profiled
   @Override
   public CrawlResult crawl(List<String> startingUrls) {
     Instant deadline = clock.instant().plus(timeout);
     Map<String, Integer> counts = new ConcurrentHashMap<>();
-    ConcurrentSkipListSet<String> visitedUrls = new ConcurrentSkipListSet<>();
-
+   ConcurrentSkipListSet<String> visitedUrls = new ConcurrentSkipListSet<>();
     for(String url : startingUrls){
       CrawlTask crawlTask = new CrawlTaskBuilder()
               .setClock(clock)

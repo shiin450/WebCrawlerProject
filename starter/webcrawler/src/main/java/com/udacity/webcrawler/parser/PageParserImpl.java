@@ -1,5 +1,7 @@
 package com.udacity.webcrawler.parser;
 
+import com.udacity.webcrawler.profiler.Profiled;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -57,6 +59,7 @@ final class PageParserImpl implements PageParser {
     this.ignoredWords = Objects.requireNonNull(ignoredWords);
   }
 
+  @Profiled
   @Override
   public Result parse() {
     URI parsedUri;
@@ -80,7 +83,7 @@ final class PageParserImpl implements PageParser {
     // Do a single pass over the document to gather all hyperlinks and text.
     document.traverse(new NodeVisitor() {
       @Override
-      public void head(Node node, int depth) {
+      public void head(@NonNull Node node, int depth) {
         if (node instanceof TextNode) {
           String text = ((TextNode) node).text().strip();
           Arrays.stream(WHITESPACE.split(text))
@@ -110,7 +113,7 @@ final class PageParserImpl implements PageParser {
       }
 
       @Override
-      public void tail(Node node, int depth) {
+      public void tail(@NonNull Node node, int depth) {
       }
     });
     return builder.build();

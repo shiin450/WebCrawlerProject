@@ -2,6 +2,7 @@ package com.udacity.webcrawler.json;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.Objects;
 /**
  * A static utility class that loads a JSON configuration file.
  */
-
+@JsonDeserialize(builder = CrawlerConfiguration.Builder.class)
 public final class ConfigurationLoader {
 
   private final Path path;
@@ -33,9 +34,9 @@ public final class ConfigurationLoader {
    */
   public CrawlerConfiguration load() throws IOException {
     // TODO: Fill in this method.
-   try(BufferedReader bfReader = Files.newBufferedReader(this.path)){
-     return read(bfReader);
-   }
+    try (BufferedReader bufferedReader = Files.newBufferedReader(this.path)) {
+      return read(bufferedReader);
+    }
   }
 
   /**
@@ -57,7 +58,6 @@ public final class ConfigurationLoader {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
 
     assert configBuild != null;
     return configBuild.build();
