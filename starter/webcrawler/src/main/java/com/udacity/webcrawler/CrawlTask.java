@@ -85,7 +85,7 @@ public final class CrawlTask extends RecursiveAction {
                         .setIgnoredUrls(ignoredUrls)
                         .setMaxDepth(maxDepth-1)
                         .setParserFactory(parserFactory)
-                        .setUrl(url)
+                        .setUrl(sublink)
                         .setVisitedUrls(visitedUrls)
                         .createCrawlTask())
                         .collect(Collectors.toList());
