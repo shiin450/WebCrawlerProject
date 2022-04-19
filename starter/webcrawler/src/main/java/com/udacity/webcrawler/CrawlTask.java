@@ -11,16 +11,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.RecursiveAction;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-/*
-private final int maxDepth;
-    private final Clock clock;
-    private final Instant deadline;
-    private final String url;
-    private final PageParserFactory parserFactory;
-    private final Map<String, Integer> counts;
-    private final ConcurrentSkipListSet<String> visitedUrls;
-    private final List<Pattern> ignoredUrls;
- */
 
 public final class CrawlTask extends RecursiveAction {
 
@@ -40,7 +30,7 @@ public final class CrawlTask extends RecursiveAction {
                      String url,
                      Instant deadline,
                      int maxDepth,
-                     Map<String,Integer> counts,
+                     Map<String, Integer> counts,
                      ConcurrentSkipListSet<String> visitedUrls) {
         this.clock = clock;
         this.parserFactory = parserFactory;
@@ -51,9 +41,6 @@ public final class CrawlTask extends RecursiveAction {
         this.counts = counts;
         this.visitedUrls = visitedUrls;
     }
-
-
-
 
 
     @Override
@@ -79,23 +66,23 @@ public final class CrawlTask extends RecursiveAction {
         List<String> sublinks = result.getLinks();
         List<CrawlTask> subtasks =
                 sublinks.stream().map(sublink -> new CrawlTaskBuilder()
-                        .setClock(clock)
-                        .setCounts(counts)
-                        .setDeadline(deadline)
-                        .setIgnoredUrls(ignoredUrls)
-                        .setMaxDepth(maxDepth-1)
-                        .setParserFactory(parserFactory)
-                        .setUrl(sublink)
-                        .setVisitedUrls(visitedUrls)
-                        .createCrawlTask())
+                                .setClock(clock)
+                                .setCounts(counts)
+                                .setDeadline(deadline)
+                                .setIgnoredUrls(ignoredUrls)
+                                .setMaxDepth(maxDepth - 1)
+                                .setParserFactory(parserFactory)
+                                .setUrl(sublink)
+                                .setVisitedUrls(visitedUrls)
+                                .createCrawlTask())
                         .collect(Collectors.toList());
 
-                    invokeAll(subtasks);
-
+        invokeAll(subtasks);
 
 
     }
-    public static void popularWordsCounter(PageParser.Result result, Map<String, Integer>counts){
+
+    public static void popularWordsCounter(PageParser.Result result, Map<String, Integer> counts) {
         for (Map.Entry<String, Integer> e : result.getWordCounts().entrySet()) {
             counts.compute(e.getKey(), (k, v) -> (v == null) ? e.getValue() : counts.get(e.getKey()) + e.getValue());
         }

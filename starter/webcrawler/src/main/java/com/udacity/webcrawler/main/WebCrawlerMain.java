@@ -19,52 +19,53 @@ import java.util.Objects;
 
 public final class WebCrawlerMain {
 
-  private final CrawlerConfiguration config;
+    private final CrawlerConfiguration config;
 
-  private WebCrawlerMain(CrawlerConfiguration config) {
-    this.config = Objects.requireNonNull(config);
-  }
-
-  @Inject
-  private WebCrawler crawler;
-
-  @Inject
-  private Profiler profiler;
-
-  private void run() throws IOException {
-    Guice.createInjector(new WebCrawlerModule(config), new ProfilerModule()).injectMembers(this);
-
-    CrawlResult result = crawler.crawl(config.getStartPages());
-    CrawlResultWriter resultWriter = new CrawlResultWriter(result);
-    // TODO: Write the crawl results to a JSON file (or System.out if the file name is empty)
-    //check the value of config.getResultPath(). If it's a non-empty string, create a
-    // Path using config.getResultPath() as the file name,
-    // then pass that Path to the CrawlResultWriter#write(Path) method.
-
-    if (!config.getResultPath().isEmpty()){
-      Path path = Paths.get(config.getResultPath());
-      resultWriter.write(path);
-    }else {
-
-      resultWriter.write(new OutputStreamWriter(System.out));
-
-    }
-    // TODO: Write the profile data to a text file (or System.out if the file name is empty)
-
-    if (!config.getProfileOutputPath().isEmpty()){
-      profiler.writeData(Paths.get(config.getProfileOutputPath()));
-    }else {
-      profiler.writeData(new OutputStreamWriter(System.out));
-    }
-  }
-
-  public static void main(String[] args) throws Exception {
-    if (args.length != 1) {
-      System.out.println("Usage: WebCrawlerMain [starting-url]");
-      return;
+    private WebCrawlerMain(CrawlerConfiguration config) {
+        this.config = Objects.requireNonNull(config);
     }
 
-    CrawlerConfiguration config = new ConfigurationLoader(Path.of(args[0])).load();
-    new WebCrawlerMain(config).run();
-  }
+    @Inject
+    private WebCrawler crawler;
+
+    @Inject
+    private Profiler profiler;
+
+    private void run() throws IOException {
+        Guice.createInjector(new WebCrawlerModule(config), new ProfilerModule()).injectMembers(this);
+
+        CrawlResult result = crawler.crawl(config.getStartPages());
+        CrawlResultWriter resultWriter = new CrawlResultWriter(result);
+        // TODO: Write the crawl results to a JSON file (or System.out if the file name is empty)
+        //check the value of config.getResultPath(). If it's a non-empty string, create a
+        // Path using config.getResultPath() as the file name,
+        // then pass that Path to the CrawlResultWriter#write(Path) method.
+
+        if (!config.getResultPath().isEmpty()) {
+            Path path = Paths.get(config.getResultPath());
+            resultWriter.write(path);
+        } else {
+
+            resultWriter.write(new OutputStreamWriter(System.out));
+
+        }
+        // TODO: Write the profile data to a text file (or System.out if the file name is empty)
+
+        if (!config.getProfileOutputPath().isEmpty()) {
+            Path path = Paths.get(config.getProfileOutputPath());
+            profiler.writeData(path);
+        } else {
+            profiler.writeData(new OutputStreamWriter(System.out));
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            System.out.println("Usage: WebCrawlerMain [starting-url]");
+            return;
+        }
+
+        CrawlerConfiguration config = new ConfigurationLoader(Path.of(args[0])).load();
+        new WebCrawlerMain(config).run();
+    }
 }

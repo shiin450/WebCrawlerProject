@@ -1,0 +1,71 @@
+Q1.  Why did the parser take more time when run with ParallelWebCrawler?
+
+     there are number of reasons that could contribute to this, first downloading single page
+     is a small task that can't be broken down into subtasks, apart from that thread creation is not
+     free, it comes with overhead, so the parser took more time because the task is small and can't be broken down,
+     and it takes time to create threads, so parser in ParallelWebCrawler took overhead time for thread creation plus
+     the sequential time to parse the page.
+
+Q2.
+
+    A. Since it is an old computer most likely it is a single-processor system, so concurrent
+        tasks are sharing the execution thread while still appearing to be executing in parallel,
+        thus not truly multi-tasking,in single-processor systems multiple threads execute ,
+        one after the other or wait until one thread finishes.
+
+    B. Parallel web crawler will almost certainly perform better than the sequential crawler in the flowing situations;
+        - if there are significant number of parallelizable tasks, small task do not produce better performance in
+            parallelism.
+        - on multi-processor system sometimes called real multi-threading environments
+
+Q3.
+    A. It solves performance-logging/performance-profiling cross-cutting concern.
+    B. The join points of the Profiler in the web crawler program are methods annotated with @Profiled,
+        the crawl() method in both sequential and parallel web crawler,and the parse() method in the PageParserImpl.
+
+Q4. three design patterns used in the webcrawler program, cons and pros and classes using it.
+
+     A. Dependency Injection -> Is a design pattern that moves the creation of dependencies to outside your code.
+         Instead of creating objects, you tell the DI framework to create the objects for you, and then you inject
+         those objects into your class. used by many class in our project, such us WebCrawlerMain,PageParserFactoryImpl,
+         ParallelWebCrawler,ProfilerImpl and many other classes.
+
+          things I like about this pattern are:
+          > Loose Coupling - DI makes your code extensible, which allows you to maintain and extend your code as it grows
+          > Injecting Dependencies - DI allow you to inject outside dependencies to your project, so that you can use
+                outside dependencies in your code, it allows to run your application without telling where each and every
+                dependency is.
+          > Unit testing -DI allows testing small pieces of code in isolation. on loosely-coupled code,
+                            we can inject mock or fake dependencies so that we can easily isolate the parts
+                            of the code we want to test.
+          I dislike about it:
+          > DI bring with it more boilerplate code, so technically you have to write more lines of code.
+
+
+     B. Builder Design Pattern: A mutable factory that constructs the state of a to-be-created object,
+                                property by property, and then builds the object. used by many classes
+                                such us, CrawlTaskBuilder, CrawlerConfiguration,ParserModule and PageParser.
+                  I like about it:
+                  - it makes easy instantiating complex constructors
+                  - supports method chaining
+                  - allows creating immutable data objects
+
+        I dislike about it:
+            > Builder Pattern brings with it more boilerplate code, so technically you have to write more lines
+                of code.
+
+
+     C. Abstract Factory Design Pattern: Provides an interface for creating families of related or dependent objects
+                                         without specifying their concrete classes. Factories are useful for hiding
+                                         construction details from callers. used by PageParserFactoryImpl
+
+          I like about it:
+          -You can encapsulate construction of several related objects into a single Java interface.
+          -Hiding construction details for callers, you have different constructors but callers should only know just one.
+
+          I dislike about it:
+          - I personally have no dislikes about this pattern, but Abstract factory is not good for extensibility,
+            " because the Abstract Factory interface fixes the set of products that can be created.Supporting new
+            kinds of products requires extending the factory interface,which involves changing the Abstract Factory
+            class and all of its subclasses." from the book of GOF
+
