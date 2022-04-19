@@ -1,10 +1,8 @@
 Q1.  Why did the parser take more time when run with ParallelWebCrawler?
-
-     there are number of reasons that could contribute to this, first downloading single page
-     is a small task that can't be broken down into subtasks, apart from that thread creation is not
-     free, it comes with overhead, so the parser took more time because the task is small and can't be broken down,
-     and it takes time to create threads, so parser in ParallelWebCrawler took overhead time for thread creation plus
-     the sequential time to parse the page.
+          Our profiler measures the time it takes for each method of our annotated methods to complete,
+          so the profiler measured the total time spent in the parse() method across all threads.
+          When run with the ParallelWebCrawler, the parse() method run more times,
+          so profileData.txt shows the aggregated total parse() time which is greater than the sequential.
 
 Q2.
 
